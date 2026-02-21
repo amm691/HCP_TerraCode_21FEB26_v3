@@ -1,51 +1,60 @@
+# ================= CLOUD BUILD =================
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 # ---------------- INFRA ----------------
 - name: hashicorp/terraform:1.6
   dir: infra
-  args: ["init"]
+  args:
+    - init
 
 - name: hashicorp/terraform:1.6
   dir: infra
-  args: ["apply","-auto-approve","-var=project_id=$PROJECT_ID"]
+  args:
+    - apply
+    - -auto-approve
+    - -var=project_id=$PROJECT_ID
 
 # ---------------- BUILD APP1 ----------------
 - name: gcr.io/cloud-builders/docker
   args:
     - build
-    - "-t"
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA"
-    - "./app1"
+    - -t
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA
+    - ./app1
 
 - name: gcr.io/cloud-builders/docker
   args:
     - push
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA"
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA
 
 # ---------------- BUILD APP2 ----------------
 - name: gcr.io/cloud-builders/docker
   args:
     - build
-    - "-t"
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA"
-    - "./app2"
+    - -t
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA
+    - ./app2
 
 - name: gcr.io/cloud-builders/docker
   args:
     - push
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA"
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA
 
 # ---------------- BUILD APP3 ----------------
 - name: gcr.io/cloud-builders/docker
   args:
     - build
-    - "-t"
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA"
-    - "./app3"
+    - -t
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA
+    - ./app3
 
 - name: gcr.io/cloud-builders/docker
   args:
     - push
-    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA"
+    - asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA
 
 # ---------------- DEPLOY ----------------
 - name: gcr.io/cloud-builders/gcloud
@@ -54,9 +63,11 @@ steps:
     - clusters
     - get-credentials
     - cluster-amit
-    - "--region"
+    - --region
     - asia-south1
 
 - name: gcr.io/cloud-builders/kubectl
-  args: ["apply","-f","k8s/"]
-
+  args:
+    - apply
+    - -f
+    - k8s/
