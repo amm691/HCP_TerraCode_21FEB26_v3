@@ -4,7 +4,7 @@ provider "google" {
   region  = var.region
 }
 
-resource "google_container_cluster" "primary" {
+resource "google_container_cluster" "gke" {
   name     = "cluster-amit"
   location = var.region
 
@@ -14,7 +14,7 @@ resource "google_container_cluster" "primary" {
 
 resource "google_container_node_pool" "primary_nodes" {
   name       = "primary-node-pool"
-  cluster    = google_container_cluster.primary.name
+  cluster    = google_container_cluster.gke.name
   location   = var.region
   node_count = 3
 
