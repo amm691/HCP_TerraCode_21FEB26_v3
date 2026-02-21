@@ -17,7 +17,7 @@ resource "google_container_node_pool" "primary" {
   cluster    = google_container_cluster.gke.name
   location   = google_container_cluster.gke.location
   node_count = 3
-
+}
   node_config {
     machine_type = "e2-standard-4"
     disk_size_gb = 100
