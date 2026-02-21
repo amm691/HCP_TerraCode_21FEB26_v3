@@ -19,6 +19,6 @@ resource "google_container_node_pool" "primary" {
   node_count = 3
 }
   node_config {
-    machine_type = "e2-standard-4"
-    disk_size_gb = 100
+    machine_type = "e2-medium"
+    disk_size_gb = 80
   }
