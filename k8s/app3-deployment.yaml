@@ -1,4 +1,4 @@
-k8s/app3-deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
