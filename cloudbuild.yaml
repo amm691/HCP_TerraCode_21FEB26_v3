@@ -1,0 +1,62 @@
+steps:
+# ---------------- INFRA ----------------
+- name: hashicorp/terraform:1.6
+  dir: infra
+  args: ["init"]
+
+- name: hashicorp/terraform:1.6
+  dir: infra
+  args: ["apply","-auto-approve","-var=project_id=$PROJECT_ID"]
+
+# ---------------- BUILD APP1 ----------------
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - "-t"
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA"
+    - "./app1"
+
+- name: gcr.io/cloud-builders/docker
+  args:
+    - push
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app1:$SHORT_SHA"
+
+# ---------------- BUILD APP2 ----------------
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - "-t"
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA"
+    - "./app2"
+
+- name: gcr.io/cloud-builders/docker
+  args:
+    - push
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app2:$SHORT_SHA"
+
+# ---------------- BUILD APP3 ----------------
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - "-t"
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA"
+    - "./app3"
+
+- name: gcr.io/cloud-builders/docker
+  args:
+    - push
+    - "asia-south1-docker.pkg.dev/$PROJECT_ID/app-repo/app3:$SHORT_SHA"
+
+# ---------------- DEPLOY ----------------
+- name: gcr.io/cloud-builders/gcloud
+  args:
+    - container
+    - clusters
+    - get-credentials
+    - cluster-amit
+    - "--region"
+    - asia-south1
+
+- name: gcr.io/cloud-builders/kubectl
+  args: ["apply","-f","k8s/"]
+
