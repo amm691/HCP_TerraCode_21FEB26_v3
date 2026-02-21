@@ -1,6 +1,6 @@
   terraform {
   backend "gcs" {
-    bucket  = "my-terraform-state-bucket"
-    prefix  = "gke/infra"
+    bucket  = "tf-state-bucket-amt-21feb26"
+    prefix  = "gke-3apps"
   }
 }
